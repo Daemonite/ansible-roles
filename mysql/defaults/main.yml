@@ -1,0 +1,14 @@
+---
+  mysqlbackup_deploy: False
+  mysqlbackup_bucket: ""
+  mysqlbackup_object: ""
+  mysqlbackup_aws_access_key: ""
+  mysqlbackup_aws_secret_key: ""
+
+  mysql_local: True
+  mysql_host: localhost
+  mysql_port: 3306
+  mysql_root_password: "(password omitted)"
+  mysql_lower_case_table_names: 1
+  mysql_database: chelsea
+  mysql_error_log_path: /var/log/mysql/error.log

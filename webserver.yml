@@ -1,0 +1,14 @@
+---
+- hosts: webservers
+  sudo: true
+  vars:
+    application_environment: vagrant
+    domains: 
+    - localhost
+  roles:
+  - { role: common }
+  - { role: memcached }
+  - { role: mysql }
+  - { role: railo }
+  - { role: nginx }
+  - { role: website }

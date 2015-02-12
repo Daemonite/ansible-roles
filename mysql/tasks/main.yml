@@ -1,0 +1,32 @@
+---
+# system packages
+- name: configure mysql-server deb
+  debconf: name="mysql-server-5.5" question="mysql-server/root_password" vtype="select" value="{{mysql_root_password}}"
+  when: mysql_local
+- name: confirm mysql-server password
+  debconf: name="mysql-server-5.5" question="mysql-server/root_password_again" vtype="select" value="{{mysql_root_password}}"
+  when: mysql_local
+- name: install packages
+  apt: pkg={{item}} state=latest
+  with_items:
+  - mysql-server
+  - mysql-client
+  - python-mysqldb
+  - python-boto
+  when: mysql_local
+- name: copy in mysql config
+  template: src=my.cnf dest=/etc/mysql/my.cnf
+  when: mysql_local
+  notify: restart MySQL
+
+# deploy db
+- name: get mysql backup
+  s3: bucket={{mysqlbackup_bucket}} object={{mysqlbackup_object}} dest=/opt/db.sql.gz mode=get aws_access_key={{mysqlbackup_aws_access_key}} aws_secret_key={{mysqlbackup_aws_secret_key}}
+  when: mysqlbackup_deploy and mysqlbackup_object != 0
+- name: create database
+  mysql_db: name={{mysql_database}} login_host="{{mysql_host}}" login_port="{{mysql_port}}" login_user="root" login_password="{{mysql_root_password}}" state=present
+  register: unswtv_db
+  when: mysqlbackup_deploy
+- name: deploy mysql backup
+  mysql_db: name={{mysql_database}} login_host="{{mysql_host}}" login_port="{{mysql_port}}" login_user="root" login_password="{{mysql_root_password}}" state=import target=/opt/db.sql.gz
+  when: mysqlbackup_object != 0 and unswtv_db|changed

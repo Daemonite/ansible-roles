@@ -1,0 +1,63 @@
+---
+- name: map live domain to localhost on server
+  lineinfile: dest=/etc/hosts regexp="^127\.0\.0\.1.*\# application" line="127.0.0.1 {{domains | join(' ')}} \# application" state=present
+
+# setup git key
+- name: copy in git private key to root
+  copy: src={{farcry_key}} dest=/opt/project.pem mode=0600
+  when: farcry_key != ""
+- name: key path
+  set_fact: 
+    local_key_path: "/opt/project.pem"
+    remote_key_path: "{{farcry_key}}"
+- name: secure local key file
+  file: path={{farcry_key}} mode=0600
+  delegate_to: 127.0.0.1
+  sudo: False
+  when: farcry_key != ""
+
+# check out project using script
+- name: dev machine
+  set_fact: 
+    dev_machine: "{{ application_environment == 'vagrant' }}"
+- name: get shallow local copy of project repo
+  git: repo={{farcry_repository}} version={{farcry_branch}} dest=/tmp/{{farcry_repository|basename}} key_file={{local_key_path}} accept_hostkey=True
+  delegate_to: 127.0.0.1
+  sudo: False
+  run_once: true
+- name: update checkouts
+  git: repo={{item.repo}} version={{item.version}} dest=/opt/www/{{item.path}} key_file={{remote_key_path}} accept_hostkey=True force={{ not dev_machine }}
+  with_fcdeploy:
+  - /tmp/{{farcry_repository|basename}}/{{farcry_fcscript}}
+  ignore_errors: True
+  notify: restart Railo
+
+# setup nginx settings
+- name: update certificate variables (self-signed)
+  set_fact: 
+    nginx_certificate: "/etc/nginx/ssl/site.crt"
+    nginx_certificate_key: "/etc/nginx/ssl/site.key"
+  when: nginx_selfsigned == True
+- name: copy website conf
+  template: src=nginx.conf dest=/etc/nginx/sites-enabled/default
+  notify: restart nginx
+- name: create ssl directory
+  file: path=/etc/nginx/ssl state=directory
+  when: nginx_selfsigned == True
+- name: create self-signed SSL cert
+  command: openssl req -new -nodes -x509 -subj "/C=AU/ST=NSW/L=Sydney/O=UNSW/CN={{ domains[0] }}" -days 3650 -keyout {{nginx_certificate_key}} -out {{nginx_certificate}} -extensions v3_ca creates={{nginx_certificate}}
+  when: nginx_selfsigned == True
+  notify: restart nginx
+- meta: flush_handlers
+
+# setup railo settings
+- name: ping site to create WEB-INF
+  shell: "curl --header 'Host: {{domains[0]}}' 'http://127.0.0.1/'"
+  args:
+    creates: /opt/WEB-INF
+- name: update railo-web.xml.cfm
+  template: src=railo-web.xml.cfm dest=/opt/WEB-INF/railo-web.xml.cfm mode=0660
+  notify: restart Railo
+- name: sync railo logs
+  cron: name="railo log sync" job="for f in `ls /opt/WEB-INF/logs/`; do cp /opt/WEB-INF/logs/$f /logs/railo-$f; done"
+  when: application_environment == "vagrant"

@@ -1,0 +1,29 @@
+---
+  application_environment: vagrant
+  domains: 
+  - localhost
+
+  farcry_repository: git@github.com:farcrycore/project-chelsea.git
+  farcry_branch: "master"
+  farcry_key: ""
+  farcry_fcscript: install/deploy.txt
+  farcry_path: /opt/www
+
+  nginx_selfsigned: True
+  nginx_certificate: ""
+  nginx_certificate_key: ""
+
+  railo_website_password_hash: "8a872e8f97f136e650c877509922cbd2e051a22104b28f25762024ff46143d4f"
+  railo_datasource: "chelsea"
+  railo_datasource_username: root
+  railo_datasource_password_hash: "a953d49b5b92d97fdab41092287c992d2c15df6d2255eb02d9e2c97a5c56f78e"
+
+  mysql_host: localhost
+  mysql_port: 3306
+  mysql_database: "chelsea"
+
+  web_root: /opt/www/projects/chelsea/www
+
+  # these are overridden in the ansible script based on settings above
+  local_key_path: null
+  remote_key_path: null
