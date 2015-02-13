@@ -5,7 +5,7 @@
   railo_xms: 512m
   railo_xmx: 512m
   railo_max_perm_size: 128m
-  railo_server_password_hash: 8a872e8f97f136e650c877509922cbd2e051a22104b28f25762024ff46143d4f
+  railo_server_password_hash: 5b7a87d1479e4f72b1076c4e8d8c0edd749cca9ba62ae5a74859f507e72a37ca
 
   fusionreactor_deploy: True
   fusionreactor_installer: https://s3-ap-southeast-2.amazonaws.com/daemon-provisioning-resources/fusionreactor/FusionReactor_linux-x64_5_1_4.sh

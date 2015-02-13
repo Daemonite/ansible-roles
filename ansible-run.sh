@@ -4,6 +4,8 @@
 PLAYBOOK=""
 GROUP=""
 EXTRA_VARS=""
+INVENTORY="/etc/ansible/hosts"
+APPLICATION_ENVIRONMENT=""
 
 # parse options
 while : 
@@ -11,7 +13,10 @@ do
     if [[ "$1" == --* ]]; then
     	case $1 in
 			"--playbook" ) PLAYBOOK=$2; shift; shift;;
+			"-i" ) INVENTORY=$2; shift; shift;;
             "--group" ) GROUP=$2; shift; shift;;
+            "--environment" ) APPLICATION_ENVIRONMENT=$2; shift; shift;;
+            "--inventory" ) INVENTORY=$2; shift; shift;;
 			"--extra-vars" ) EXTRA_VARS=$2; shift; shift;;
     	    * ) echo "Error: unknown option $1"; echo;;
     	esac
@@ -39,7 +44,9 @@ if [[ -z $ANSIBLE_INSTALLED ]]; then
 	echo "127.0.0.1" > /etc/ansible/hosts
 fi
 
-echo -e "[${GROUP}]\n127.0.0.1" > /etc/ansible/hosts
+if [[ -n "${GROUP}" ]]; then
+	echo -e "[${APPLICATION_ENVIRONMENT}]\n127.0.0.1\n\n[${GROUP}]\n${APPLICATION_ENVIRONMENT}" > ${INVENTORY}
+fi
 
 echo "BUILDING WITH VARS: ${EXTRA_VARS}"
-ansible-playbook -v -c local "${PLAYBOOK}" --extra-vars "${EXTRA_VARS}"
+ANSIBLE_FORCE_COLOR=True ansible-playbook -v -c local "${PLAYBOOK}" -i "${INVENTORY}" --extra-vars "${EXTRA_VARS}"

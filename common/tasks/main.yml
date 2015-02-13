@@ -6,7 +6,7 @@
   copy: src=/usr/share/zoneinfo/{{ubuntu_timezone}} dest=/etc/localtime mode=644 force=yes
 
 # system packages
-- name: use amazons package archive
+- name: override package archive
   replace: dest=/etc/apt/sources.list regexp="http://archive.ubuntu.com/ubuntu" replace={{ubuntu_package_archive}}
   when: ubuntu_package_archive != ""
 - name: install python-software-properties

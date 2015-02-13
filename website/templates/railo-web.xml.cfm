@@ -30,7 +30,7 @@ Path placeholders:
 <!--     - http://sourceforge.net                                                                       -->
 <!--    or ask your database distributor                                                                -->
     <data-sources>
-        <data-source allow="511" blob="true" class="org.gjt.mm.mysql.Driver" clob="true" connectionLimit="-1" connectionTimeout="1" custom="useUnicode=true&amp;characterEncoding=UTF-8&amp;allowMultiQueries=true&amp;useLegacyDatetimeCode=true" database="{{mysql_database}}" dbdriver="MySQL" dsn="jdbc:mysql://{host}:{port}/{database}" host="{{mysql_host}}" metaCacheTimeout="60000" name="{{railo_datasource}}" password="encrypted:{{railo_datasource_password_hash}}" port="{{mysql_port}}" storage="false" timezone="AET" username="{{railo_datasource_username}}" validate="false"/>
+        <data-source allow="511" blob="true" class="org.gjt.mm.mysql.Driver" clob="true" connectionLimit="-1" connectionTimeout="1" custom="useUnicode=true&amp;characterEncoding=UTF-8&amp;allowMultiQueries=true&amp;useLegacyDatetimeCode=true" database="{{mysql_database}}" dbdriver="MySQL" dsn="jdbc:mysql://{host}:{port}/{database}" host="{{mysql_host}}" metaCacheTimeout="60000" name="{{railo_datasource}}" password="{% if railo_datasource_password_hash != "" %}encrypted:{{railo_datasource_password_hash}}{% endif %}" port="{{mysql_port}}" storage="false" timezone="AET" username="{{railo_datasource_username}}" validate="false"/>
     </data-sources>
     
     <resources>

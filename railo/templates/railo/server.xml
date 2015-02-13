@@ -101,7 +101,7 @@
     <!-- You should set jvmRoute to support load-balancing via AJP ie :
     <Engine name="Catalina" defaultHost="localhost" jvmRoute="jvm1">         
     --> 
-    <Engine name="Catalina" defaultHost="tv.unsw.edu.au">
+    <Engine name="Catalina" defaultHost="localhost">
 
       <!--For clustering, please take a look at documentation at:
           /docs/cluster-howto.html  (simple how to)
@@ -121,7 +121,7 @@
                resourceName="UserDatabase"/>
       </Realm> -->
 
-      <Host name="127.0.0.100"  appBase="webapps"
+      <Host name="127.0.0.1"  appBase="webapps"
             unpackWARs="false" autoDeploy="false">
 
         <!-- SingleSignOn valve, share authentication between web applications
@@ -148,7 +148,7 @@
         <Valve className="org.apache.catalina.valves.RemoteIpValve"  />
       </Host>
 
-      <Host name="127.0.0.1" appBase="webapps">
+      <Host name="localhost" appBase="webapps">
         <Context path="" docBase="{{web_root}}" />
         {% for domain in domains %}
            <Alias>{{domain}}</Alias>

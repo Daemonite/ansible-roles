@@ -45,7 +45,7 @@
   file: path=/etc/nginx/ssl state=directory
   when: nginx_selfsigned == True
 - name: create self-signed SSL cert
-  command: openssl req -new -nodes -x509 -subj "/C=AU/ST=NSW/L=Sydney/O=UNSW/CN={{ domains[0] }}" -days 3650 -keyout {{nginx_certificate_key}} -out {{nginx_certificate}} -extensions v3_ca creates={{nginx_certificate}}
+  command: openssl req -new -nodes -x509 -subj "/C=AU/ST=NSW/L=Sydney/O=Daemon/CN={{ domains[0] }}" -days 3650 -keyout {{nginx_certificate_key}} -out {{nginx_certificate}} -extensions v3_ca creates={{nginx_certificate}}
   when: nginx_selfsigned == True
   notify: restart nginx
 - meta: flush_handlers
@@ -58,6 +58,20 @@
 - name: update railo-web.xml.cfm
   template: src=railo-web.xml.cfm dest=/opt/WEB-INF/railo-web.xml.cfm mode=0660
   notify: restart Railo
+- meta: flush_handlers
 - name: sync railo logs
   cron: name="railo log sync" job="for f in `ls /opt/WEB-INF/logs/`; do cp /opt/WEB-INF/logs/$f /logs/railo-$f; done"
   when: application_environment == "vagrant"
+
+# run farcry installer
+- name: check if database is set up
+  command: mysql --host={{mysql_host}} --port={{mysql_port}} --user=root --password='{{mysql_root_password}}' -e 'SELECT distinct(locale) as locale from dmProfile' {{mysql_database}}
+  register: db_check
+  ignore_errors: yes
+  when: farcry_installer_run
+- name: install project data
+  shell: "curl 'http://localhost/webtop/install/' -H 'Host: {{domains[0]}}' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:29.0) Gecko/20100101 Firefox/29.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate' -H 'Referer: http://{{domains[0]}}/webtop/install/' -H 'Connection: keep-alive' -H 'Content-Type: application/x-www-form-urlencoded' --data 'selectedSkeleton=&displayName={{farcry_installer_displayname}}&projectDirectoryName={{farcry_installer_project}}&name={{farcry_installer_project}}&updateappKey={{farcry_installer_updateappkey}}&dsn={{railo_datasource}}&dbType=mysql&dbOwner=&farcryUserPassword={{farcry_installer_password}}&installAction=install'"
+  when: farcry_installer_run and db_check|failed
+- name: project updateall
+  shell: "curl 'http://localhost/?updateall={{farcry_installer_updateappkey}}' -H 'Host: {{domains[0]}}' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:29.0) Gecko/20100101 Firefox/29.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate' -H 'Referer: http://{{domains[0]}}/' -H 'Connection: keep-alive'"
+  when: farcry_installer_run and db_check|failed

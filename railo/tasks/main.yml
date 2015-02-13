@@ -24,7 +24,7 @@
   template: src=railo/railo-server.xml dest=/opt/railo/lib/railo-server/context/railo-server.xml
   notify: restart Railo
 - name: make sure Railo runs on startup
-  service: name=railo_ctl enabled=yes
+  service: name=railo_ctl enabled=yes state=started
 - name: sync tomcat logs
   cron: name="tomcat log sync" job="for f in `ls /opt/railo/tomcat/logs/`; do cp /opt/railo/tomcat/logs/$f /logs/tomcat-$f; done"
   when: application_environment == "vagrant"

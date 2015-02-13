@@ -1,0 +1,3 @@
+---
+  awscli_install_apitools: True
+  awscli_install_amitools: True
