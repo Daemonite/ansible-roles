@@ -22,6 +22,12 @@
   railo_datasource: "chelsea"
   railo_datasource_username: root
   railo_datasource_password_hash: ""
+  railo_smtp_server: ""
+  railo_smtp_port: "485"
+  railo_smtp_user: ""
+  railo_smtp_password_hash: ""
+  railo_smtp_ssl: "false"
+  railo_smtp_tls: "false"
 
   mysql_host: localhost
   mysql_port: 3306

@@ -73,7 +73,7 @@ Path placeholders:
     <scope applicationtimeout="1,0,0,0" cascade-to-resultset="true" cascading="standard" client-directory="{railo-web}/client-scope/" client-directory-max-size="100mb" clientmanagement="false" clienttimeout="90,0,0,0" local-mode="update" merge-url-form="false" requesttimeout-log="{railo-web}/logs/requesttimeout.log" session-type="j2ee" sessionmanagement="true" sessionstorage="memory" sessiontimeout="0,0,30,0" setclientcookies="true" setdomaincookies="false"/>
         
     <mail log="{railo-web}/logs/mail.log">
-        <server password="encrypted:925afafd8abefe0e0d67e37440f2e2a0683a69d65002e78d7045f7a2346c2cc0101ec3b372147920ede767869bf026a147fba07699843627" port="587" smtp="smtp.mandrillapp.com" ssl="false" tls="false" username="mandrill-unsw@daemon.com.au"/>
+        {% if railo_smtp_server != "" %}<server password="encrypted:{{railo_smtp_password_hash}}" port="{{railo_smtp_port}}" smtp="{{railo_smtp_server}}" ssl="{{railo_smtp_ssl}}" tls="{{railo_smtp_tls}}" username="{{railo_smtp_user}}"/>{% endif %}
     </mail>
     
     <!--
