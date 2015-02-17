@@ -3,7 +3,7 @@
   domains: 
   - localhost
 
-  farcry_repository: git@github.com:farcrycore/project-chelsea.git
+  farcry_repository: https://github.com/farcrycore/project-chelsea.git
   farcry_branch: "master"
   farcry_key: ""
   farcry_fcscript: install/deploy.txt
