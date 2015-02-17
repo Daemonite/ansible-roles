@@ -11,6 +11,8 @@
   fusionreactor_installer: https://s3-ap-southeast-2.amazonaws.com/daemon-provisioning-resources/fusionreactor/FusionReactor_linux-x64_5_1_4.sh
   fusionreactor_license_key: "B69B6-50C6C-4C888-C878F-23E1F"
 
+  log_sync_directory: ""
+
   domains: 
   - localhost
   web_root: /opt/www/projects/chelsea/www

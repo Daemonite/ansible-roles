@@ -26,8 +26,8 @@
 - name: make sure Railo runs on startup
   service: name=railo_ctl enabled=yes state=started
 - name: sync tomcat logs
-  cron: name="tomcat log sync" job="for f in `ls /opt/railo/tomcat/logs/`; do cp /opt/railo/tomcat/logs/$f /logs/tomcat-$f; done"
-  when: application_environment == "vagrant"
+  cron: name="tomcat log sync" job="for f in `ls /opt/railo/tomcat/logs/`; do cp /opt/railo/tomcat/logs/$f {{log_sync_directory}}/tomcat-$f; done"
+  when: log_sync_directory != ""
 
 # FusionReactor setup
 - name: download FusionReactor installer

@@ -60,8 +60,8 @@
   notify: restart Railo
 - meta: flush_handlers
 - name: sync railo logs
-  cron: name="railo log sync" job="for f in `ls /opt/WEB-INF/logs/`; do cp /opt/WEB-INF/logs/$f /logs/railo-$f; done"
-  when: application_environment == "vagrant"
+  cron: name="railo log sync" job="for f in `ls /opt/WEB-INF/logs/`; do cp /opt/WEB-INF/logs/$f {{log_sync_directory}}/railo-$f; done"
+  when: log_sync_directory != ""
 
 # run farcry installer
 - name: check if database is set up

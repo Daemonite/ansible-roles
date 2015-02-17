@@ -26,6 +26,7 @@
   when: awscli_install_apitools
 - name: unzip Amazon API tools
   unarchive: src=/opt/ec2-api-tools.zip dest=/usr/local/ec2 copy=no
+  register: apitools
   when: awscli_install_apitools and apitools|changed
 - set_fact: ec2home="{{ apitools['extract_results']['out'] | unarchiveroot }}"
   when: awscli_install_apitools and apitools|changed
@@ -54,6 +55,7 @@
   when: awscli_install_amitools
 - name: unzip Amazon AMI tools
   unarchive: src=/opt/ec2-ami-tools.zip dest=/usr/local/ec2 copy=no
+  register: amitools
   when: awscli_install_amitools and amitools|changed
 - set_fact: ec2amitoolhome="{{ amitools['extract_results']['out'] | unarchiveroot }}"
   when: awscli_install_amitools and amitools|changed

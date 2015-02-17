@@ -1,10 +1,6 @@
 ---
 - hosts: webservers
   sudo: true
-  vars:
-    application_environment: vagrant
-    domains: 
-    - localhost
   roles:
   - { role: common }
   - { role: awscli, when: role_awscli is not defined or role_awscli }
