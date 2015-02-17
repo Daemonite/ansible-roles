@@ -7,7 +7,8 @@
   railo_max_perm_size: 128m
   railo_server_password_hash: 5b7a87d1479e4f72b1076c4e8d8c0edd749cca9ba62ae5a74859f507e72a37ca
 
-  fusionreactor_deploy: True
+  # fusion reactor by integral; intergral.com (temp license key only, commercial key required)
+  fusionreactor_deploy: False
   fusionreactor_installer: https://s3-ap-southeast-2.amazonaws.com/daemon-provisioning-resources/fusionreactor/FusionReactor_linux-x64_5_1_4.sh
   fusionreactor_license_key: "B69B6-50C6C-4C888-C878F-23E1F"
 
