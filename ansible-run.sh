@@ -46,6 +46,7 @@ fi
 
 if [[ -n "${GROUP}" ]]; then
 	echo -e "[${APPLICATION_ENVIRONMENT}]\n127.0.0.1\n\n[${GROUP}:children]\n${APPLICATION_ENVIRONMENT}" > ${INVENTORY}
+	chmod -x ${INVENTORY}
 fi
 
 echo "BUILDING WITH VARS: ${EXTRA_VARS}"
