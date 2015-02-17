@@ -10,6 +10,7 @@
   set_fact: 
     local_key_path: "/opt/project.pem"
     remote_key_path: "{{farcry_key}}"
+  when: farcry_key != ""
 - name: secure local key file
   file: path={{farcry_key}} mode=0600
   delegate_to: 127.0.0.1
