@@ -51,14 +51,19 @@
   notify: restart nginx
 - meta: flush_handlers
 
-# setup railo settings
+# setup cfml engine settings
 - name: ping site to create WEB-INF
   shell: "curl --header 'Host: {{domains[0]}}' 'http://127.0.0.1/'"
   args:
     creates: /opt/WEB-INF
 - name: update railo-web.xml.cfm
   template: src=railo-web.xml.cfm dest=/opt/WEB-INF/railo-web.xml.cfm mode=0660
+  when: role_railo is not defined or role_railo
   notify: restart Railo
+- name: update lucee-web.xml.cfm
+  template: src=lucee-web.xml.cfm dest=/opt/WEB-INF/lucee-web.xml.cfm mode=0660
+  when: role_lucee is not defined or role_lucee
+  notify: restart lucee
 - meta: flush_handlers
 - name: sync railo logs
   cron: name="railo log sync" job="for f in `ls /opt/WEB-INF/logs/`; do cp /opt/WEB-INF/logs/$f {{log_sync_directory}}/railo-$f; done"

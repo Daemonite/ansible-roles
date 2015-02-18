@@ -29,6 +29,17 @@
   railo_smtp_ssl: "false"
   railo_smtp_tls: "false"
 
+  lucee_website_password_hash: "5b7a87d1479e4f72b1076c4e8d8c0edd749cca9ba62ae5a74859f507e72a37ca"
+  lucee_datasource: "chelsea"
+  lucee_datasource_username: root
+  lucee_datasource_password_hash: ""
+  lucee_smtp_server: ""
+  lucee_smtp_port: "485"
+  lucee_smtp_user: ""
+  lucee_smtp_password_hash: ""
+  lucee_smtp_ssl: "false"
+  lucee_smtp_tls: "false"
+
   mysql_host: localhost
   mysql_port: 3306
   mysql_database: "chelsea"
