@@ -7,7 +7,7 @@
   debconf: name="mysql-server-5.5" question="mysql-server/root_password_again" vtype="select" value="{{mysql_root_password}}"
   when: mysql_install
 - name: install packages
-  apt: pkg={{item}} state=latest
+  apt: pkg={{item}} state=latest update_cache=yes cache_valid_time=3600
   with_items:
   - mysql-server
   - mysql-client
