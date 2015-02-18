@@ -1,6 +1,6 @@
 #install4j response file for FusionReactor 5.0.0
-framPassword=n01kn0w5
-framPasswordValidation=n01kn0w5
+framPassword=vagrant
+framPasswordValidation=vagrant
 framPort$Long=8087
 runtimeGroup=bin
 runtimeUser=nobody
