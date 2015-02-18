@@ -28,6 +28,7 @@ done
 date
 
 if [[ -z $(grep "8.8.8.8" /etc/network/interfaces) ]]; then
+	echo "USING GOOGLE NAMESERVERS"
 	sed -i 's/.*iface eth0 inet dhcp.*/&\n  dns-nameservers 8.8.8.8 8.8.4.4/' /etc/network/interfaces
 	ifdown eth0 && ifup eth0
 fi
@@ -36,6 +37,7 @@ apt-get install -y dpkg
 dpkg -s ansible && ANSIBLE_INSTALLED='YES' || ANSIBLE_INSTALLED=''
 
 if [[ -z $ANSIBLE_INSTALLED ]]; then
+	echo "INSTALLING ANSIBLE"
 	apt-get update
 	apt-get install -y -q python-software-properties 
 	add-apt-repository ppa:rquillo/ansible
@@ -45,9 +47,31 @@ if [[ -z $ANSIBLE_INSTALLED ]]; then
 fi
 
 if [[ -n "${GROUP}" ]]; then
+	echo "CREATING CUSTOM INVENTORY"
 	echo -e "[${APPLICATION_ENVIRONMENT}]\n127.0.0.1\n\n[${GROUP}:children]\n${APPLICATION_ENVIRONMENT}" > ${INVENTORY}
-	chmod -x ${INVENTORY}
 fi
 
-echo "BUILDING WITH VARS: ${EXTRA_VARS}"
-ANSIBLE_FORCE_COLOR=True ansible-playbook -v -c local "${PLAYBOOK}" -i "${INVENTORY}" --extra-vars "${EXTRA_VARS}"
+echo "CREATING LOCAL COPY OF INVENTORY"
+if [[ -d "/tmp/inventory" ]]; then
+	rm -rf /tmp/inventory
+fi
+mkdir /tmp/inventory
+cp ${INVENTORY} /tmp/inventory/hosts
+chmod -x /tmp/inventory/hosts
+SOURCE_DIR=$(dirname ${INVENTORY})
+if [[ -d "${SOURCE_DIR}/group_vars" ]]; then
+	cp -R ${SOURCE_DIR}/group_vars /tmp/inventory/
+fi
+if [[ -d "${SOURCE_DIR}/host_vars" ]]; then
+	cp -R ${SOURCE_DIR}/host_vars /tmp/inventory/
+fi
+
+if [[ -n "${EXTRA_VARS}" ]]; then
+	echo "BUILDING WITH EXTRA VARS: ${EXTRA_VARS}"
+fi
+
+echo "RUNNING PLAYBOOK"
+ANSIBLE_FORCE_COLOR=True ansible-playbook -v -c local "${PLAYBOOK}" -i /tmp/inventory/hosts --extra-vars "${EXTRA_VARS}"
+
+echo "REMOVING LOCAL COPY OF INVENTORY"
+rm -rf /tmp/inventory
