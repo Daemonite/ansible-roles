@@ -110,7 +110,7 @@ Path placeholders:
             define where lucee first look for a called cfml file.
             for example when you define physical you can partiquel overwrite the archive.
         -->
-        <mapping archive="{lucee-web}/context/lucee-context.ra" physical="{lucee-web}/context/" primary="physical" readonly="yes" toplevel="yes" trusted="true" virtual="/lucee-context/"/>
+        <mapping archive="{lucee-web}/context/lucee-context.lar" physical="{lucee-web}/context/" primary="physical" readonly="yes" toplevel="yes" trusted="true" virtual="/lucee-context/"/>
         <mapping inspect-template="" physical="/opt/www" primary="physical" toplevel="true" virtual="/farcry"/>
         <mapping inspect-template="" physical="/opt/www/core/webtop" primary="physical" toplevel="true" virtual="/webtop"/>
     </mappings> 
@@ -132,7 +132,7 @@ Path placeholders:
             access type of component data member (variables in this scope)
         use-shadow: if true component variable scope has a second scope, not only the this scope
     -->
-    <component base="/lucee-context/Component.cfc" data-member-default-access="public" use-shadow="yes"> 
+    <component base="/lucee/Component.cfc" data-member-default-access="public" use-shadow="yes"> 
     </component>
     
     <!--
