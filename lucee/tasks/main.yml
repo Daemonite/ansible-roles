@@ -1,0 +1,32 @@
+---
+# system packages
+- name: install packages
+  apt: pkg={{item}} state=latest
+  with_items:
+  - curl
+
+# lucee setup
+- name: download lucee installer
+  get_url: url={{lucee_installer}} dest=/opt/{{lucee_installer|basename}} mode=0744
+- name: install lucee
+  shell: /opt/{{lucee_installer|basename}} --mode unattended --railopass daemon --installconn false creates=/opt/lucee/uninstall
+  register: installed_lucee
+- name: update Tomcat server.xml
+  template: src=lucee/server.xml dest=/opt/lucee/tomcat/conf/server.xml
+  notify: restart lucee
+- name: update Tomcat JVM settings
+  template: src=lucee/setenv.sh dest=/opt/lucee/tomcat/bin/setenv.sh mode=0744
+  notify: restart lucee
+- name: update Tomcat web.xml
+  template: src=lucee/web.xml dest=/opt/lucee/tomcat/conf/web.xml
+  notify: restart lucee
+- name: update lucee lucee-server.xml
+  template: src=lucee/lucee-server.xml dest=/opt/lucee/lib/lucee-server/context/lucee-server.xml
+  notify: restart lucee
+- name: make sure lucee runs on startup
+  service: name=lucee_ctl enabled=yes state=started
+- name: sync tomcat logs
+  cron: name="tomcat log sync" job="for f in `ls /opt/lucee/tomcat/logs/`; do cp /opt/lucee/tomcat/logs/$f {{log_sync_directory}}/tomcat-$f; done"
+  when: log_sync_directory != ""
+
+- meta: flush_handlers

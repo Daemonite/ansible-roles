@@ -1,0 +1,2 @@
+---
+  memcached_log_path: /var/log/memcached.log

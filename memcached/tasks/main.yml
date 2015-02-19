@@ -1,0 +1,13 @@
+---
+# system packages
+- name: install packages
+  apt: pkg={{item}} update_cache=yes cache_valid_time=3600 state=latest
+  with_items:
+  - memcached
+
+# memcached setup
+- name: copy memcached conf
+  template: src=memcached.conf dest=/etc/memcached.conf
+  notify: restart memcached
+- name: make sure memcached is running
+  service: name=memcached state=started

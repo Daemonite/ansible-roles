@@ -1,0 +1,12 @@
+---
+- hosts: webservers
+  sudo: true
+  roles:
+  - { role: common }
+  - { role: awscli, when: role_awscli is not defined or role_awscli }
+  - { role: memcached, when: role_memcached is not defined or role_memcached }
+  - { role: mysql, when: role_mysql is not defined or role_mysql }
+  - { role: railo, when: role_railo is not defined or role_railo }
+  - { role: lucee, when: role_lucee is not defined or role_lucee }
+  - { role: nginx, when: role_nginx is not defined or role_nginx }
+  - { role: website, when: role_website is not defined or role_website }

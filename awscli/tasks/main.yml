@@ -1,0 +1,72 @@
+---
+# install Java
+- name: install packages
+  apt: pkg={{item}} state=latest
+  with_items:
+  - openjdk-7-jre
+  - unzip
+  - ruby
+  - kpartx
+  register: javainstalled
+- name: get JAVA location
+  shell: readlink /etc/alternatives/java | sed "s/\/bin\/java//g"
+  register: javalocation
+  when: javainstalled|changed
+- name: add JAVA_HOME to environment
+  lineinfile: dest=/etc/environment create=yes line="JAVA_HOME={{javalocation['stdout']}}" state=present
+  when: javainstalled|changed
+
+# install Amazon API tools
+- name: download Amazon API tools
+  get_url: url=http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip dest=/opt/ec2-api-tools.zip
+  register: apitools
+  when: awscli_install_apitools
+- name: make EC2 binary directory
+  file: path=/usr/local/ec2 state=directory
+  when: awscli_install_apitools
+- name: unzip Amazon API tools
+  unarchive: src=/opt/ec2-api-tools.zip dest=/usr/local/ec2 copy=no
+  register: apitools
+  when: awscli_install_apitools and apitools|changed
+- set_fact: ec2home="{{ apitools['extract_results']['out'] | unarchiveroot }}"
+  when: awscli_install_apitools and apitools|changed
+- name: add EC2_URL to environment
+  lineinfile: dest=/etc/environment regexp="^EC2_URL=" line="EC2_URL=https://ec2.ap-southeast-2.amazonaws.com" state=present
+  when: awscli_install_apitools and apitools|changed
+- name: add EC2_HOME to environment
+  lineinfile: dest=/etc/environment regexp="^EC2_HOME=" line="EC2_HOME={{ec2home}}" state=present
+  when: awscli_install_apitools and apitools|changed
+- name: add {{ec2home}}/bin to path
+  lineinfile: >
+    dest=/etc/environment
+    state=present
+    backrefs=yes
+    regexp='PATH=(["]*)((?!.*?{{ec2home}}/bin).*?)(["]*)$'
+    line="PATH=\1\2:{{ec2home}}/bin\3"
+  when: awscli_install_apitools and apitools|changed
+
+# install Amazon AMI tools
+- name: download Amazon AMI tools
+  get_url: url=http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip dest=/opt/ec2-ami-tools.zip
+  register: amitools
+  when: awscli_install_amitools
+- name: make EC2 binary directory
+  file: path=/usr/local/ec2 state=directory
+  when: awscli_install_amitools
+- name: unzip Amazon AMI tools
+  unarchive: src=/opt/ec2-ami-tools.zip dest=/usr/local/ec2 copy=no
+  register: amitools
+  when: awscli_install_amitools and amitools|changed
+- set_fact: ec2amitoolhome="{{ amitools['extract_results']['out'] | unarchiveroot }}"
+  when: awscli_install_amitools and amitools|changed
+- name: add EC2_AMITOOL_HOME to environment
+  lineinfile: dest=/etc/environment regexp="^EC2_AMITOOL_HOME=" line="EC2_AMITOOL_HOME={{ec2amitoolhome}}" state=present
+  when: awscli_install_amitools and amitools|changed
+- name: add {{ec2amitoolhome}}/bin to path
+  lineinfile: >
+    dest=/etc/environment
+    state=present
+    backrefs=yes
+    regexp='PATH=(["]*)((?!.*?{{ec2amitoolhome}}/bin).*?)(["]*)$'
+    line="PATH=\1\2:{{ec2amitoolhome}}/bin\3"
+  when: awscli_install_amitools and amitools|changed

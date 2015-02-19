@@ -1,0 +1,4 @@
+---
+  application_environment: vagrant
+  ubuntu_timezone: Australia/Sydney
+  ubuntu_package_archive: ""

@@ -1,0 +1,10 @@
+#install4j response file for FusionReactor 5.0.0
+framPassword=vagrant
+framPasswordValidation=vagrant
+framPort$Long=8087
+runtimeGroup=bin
+runtimeUser=nobody
+startService$Boolean=true
+sys.adminRights$Boolean=true
+sys.installationDir=/opt/fusionreactor
+sys.languageId=en

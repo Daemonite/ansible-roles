@@ -1,0 +1,3 @@
+---
+- name: restart Railo
+  service: name=railo_ctl state=restarted
