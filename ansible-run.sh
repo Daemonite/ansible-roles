@@ -40,7 +40,7 @@ if [[ -z $ANSIBLE_INSTALLED ]]; then
 	echo "INSTALLING ANSIBLE"
 	apt-get update
 	apt-get install -y -q python-software-properties 
-	add-apt-repository ppa:rquillo/ansible
+	add-apt-repository -y ppa:rquillo/ansible
 	apt-get update
 	apt-get install -y -q ansible
 	echo "127.0.0.1" > /etc/ansible/hosts

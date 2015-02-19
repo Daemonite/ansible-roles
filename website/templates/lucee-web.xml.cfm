@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><lucee-configuration pw="{{lucee_website_password_hash}}" version="4.2"><cfabort/>
+<?xml version="1.0" encoding="UTF-8"?><lucee-configuration pw="{{cfml_website_password_hash}}" version="4.2"><cfabort/>
 
 <!-- 
 Path placeholders:
@@ -30,8 +30,10 @@ Path placeholders:
 <!--     - http://sourceforge.net                                                                       -->
 <!--    or ask your database distributor                                                                -->
     <data-sources>
-        {% if lucee_datasource_type == 'mysql' %}
-        <data-source allow="511" blob="true" class="org.gjt.mm.mysql.Driver" clob="true" connectionLimit="-1" connectionTimeout="1" custom="useUnicode=true&amp;characterEncoding=UTF-8&amp;allowMultiQueries=true&amp;useLegacyDatetimeCode=true" database="{{lucee_datasource_database}}" dbdriver="MySQL" dsn="jdbc:mysql://{host}:{port}/{database}" host="{{lucee_datasource_host}}" metaCacheTimeout="60000" name="{{lucee_datasource}}" password="{% if lucee_datasource_password_hash != "" %}encrypted:{{lucee_datasource_password_hash}}{% endif %}" port="{{lucee_datasource_port}}" storage="false" timezone="AET" username="{{lucee_datasource_username}}" validate="false"/>
+        {% if cfml_datasource_type == 'mysql' %}
+        <data-source allow="511" blob="true" class="org.gjt.mm.mysql.Driver" clob="true" connectionLimit="-1" connectionTimeout="1" custom="useUnicode=true&amp;characterEncoding=UTF-8&amp;allowMultiQueries=true&amp;useLegacyDatetimeCode=true" database="{{cfml_datasource_database}}" dbdriver="MySQL" dsn="jdbc:mysql://{host}:{port}/{database}" host="{{cfml_datasource_host}}" metaCacheTimeout="60000" name="{{cfml_datasource}}" password="{% if cfml_datasource_password_hash != "" %}encrypted:{{cfml_datasource_password_hash}}{% endif %}" port="{{cfml_datasource_port}}" storage="false" timezone="AET" username="{{cfml_datasource_username}}" validate="false"/>
+        {% elif cfml_datasource_type == 'mysql2005' %}
+        <data-source allow="511" blob="true" class="com.microsoft.jdbc.sqlserver.SQLServerDriver" clob="true" connectionTimeout="1" custom="DATABASENAME={{cfml_datasource_database}}&amp;sendStringParametersAsUnicode=true&amp;SelectMethod=direct" database="{{cfml_datasource_database}}" dbdriver="MSSQL" dsn="jdbc:sqlserver://{host}:{port}" host="{{cfml_datasource_host}}" metaCacheTimeout="60000" name="{{cfml_datasource}}" password="{% if cfml_datasource_password_hash != "" %}encrypted:{{cfml_datasource_password_hash}}{% endif %}" port="{{cfml_datasource_port}}" storage="false" username="{{cfml_datasource_username}}" validate="false"/>
         {% endif %}
     </data-sources>
     
@@ -75,7 +77,7 @@ Path placeholders:
     <scope applicationtimeout="1,0,0,0" cascade-to-resultset="true" cascading="standard" client-directory="{lucee-web}/client-scope/" client-directory-max-size="100mb" clientmanagement="false" clienttimeout="90,0,0,0" local-mode="update" merge-url-form="false" requesttimeout-log="{lucee-web}/logs/requesttimeout.log" session-type="j2ee" sessionmanagement="true" sessionstorage="memory" sessiontimeout="0,0,30,0" setclientcookies="true" setdomaincookies="false"/>
         
     <mail log="{lucee-web}/logs/mail.log">
-        {% if lucee_smtp_server != "" %}<server password="encrypted:{{lucee_smtp_password_hash}}" port="{{lucee_smtp_port}}" smtp="{{lucee_smtp_server}}" ssl="{{lucee_smtp_ssl}}" tls="{{lucee_smtp_tls}}" username="{{lucee_smtp_user}}"/>{% endif %}
+        {% if cfml_smtp_server != "" %}<server password="encrypted:{{cfml_smtp_password_hash}}" port="{{cfml_smtp_port}}" smtp="{{cfml_smtp_server}}" ssl="{{cfml_smtp_ssl}}" tls="{{cfml_smtp_tls}}" username="{{cfml_smtp_user}}"/>{% endif %}
     </mail>
     
     <!--
