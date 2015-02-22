@@ -1,0 +1,29 @@
+---
+- hosts: webservers
+  sudo: true
+  tasks:
+  # setup git key
+  - name: key path
+    set_fact: 
+      local_key_path: "/opt/project.pem"
+      remote_key_path: "{{farcry_key}}"
+    when: farcry_key != ""
+
+  # check out project using script
+  - name: get shallow local copy of project repo
+    git: repo={{farcry_repository}} version={{farcry_branch}} dest=/tmp/{{farcry_repository|basename}} key_file={{local_key_path}} accept_hostkey=True
+    delegate_to: 127.0.0.1
+    sudo: False
+    run_once: true
+  - name: update checkouts
+    git: repo={{item.repo}} version={{item.version}} dest=/opt/www/{{item.path}} key_file={{remote_key_path}} accept_hostkey=True force={{farcry_fcscript_overridechanges}}
+    with_fcdeploy:
+    - /tmp/{{farcry_repository|basename}}/{{farcry_fcscript}}
+    ignore_errors: True
+    register: code_update
+  - name: restart Railo
+    service: name=railo_ctl state=restarted
+    when: code_update|changed and role_railo is not defined or role_railo
+  - name: restart Lucee
+    service: name=lucee_ctl state=restarted
+    when: code_update|changed and role_lucee is not defined or role_lucee

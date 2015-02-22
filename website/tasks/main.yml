@@ -18,16 +18,13 @@
   when: farcry_key != ""
 
 # check out project using script
-- name: dev machine
-  set_fact: 
-    dev_machine: "{{ application_environment == 'vagrant' }}"
 - name: get shallow local copy of project repo
   git: repo={{farcry_repository}} version={{farcry_branch}} dest=/tmp/{{farcry_repository|basename}} key_file={{local_key_path}} accept_hostkey=True
   delegate_to: 127.0.0.1
   sudo: False
   run_once: true
 - name: update checkouts
-  git: repo={{item.repo}} version={{item.version}} dest=/opt/www/{{item.path}} key_file={{remote_key_path}} accept_hostkey=True force={{ not dev_machine }}
+  git: repo={{item.repo}} version={{item.version}} dest=/opt/www/{{item.path}} key_file={{remote_key_path}} accept_hostkey=True force={{farcry_fcscript_overridechanges}}
   with_fcdeploy:
   - /tmp/{{farcry_repository|basename}}/{{farcry_fcscript}}
   ignore_errors: True
@@ -70,13 +67,13 @@
   when: log_sync_directory != ""
 
 # run farcry installer
-- name: check if database is set up
-  command: mysql --host={{mysql_host}} --port={{mysql_port}} --user=root --password='{{mysql_root_password}}' -e 'SELECT distinct(locale) as locale from dmProfile' {{mysql_database}}
+- name: check if database is set up (railo)
+  command: mysql --host={{cfml_datasource_host}} --port={{cfml_datasource_port}} --user={{cfml_datasource_username}} --password='{{cfml_datasource_password}}' -e 'SELECT distinct(locale) as locale from dmProfile' {{cfml_datasource_database}}
   register: db_check
   ignore_errors: yes
   when: farcry_installer_run
 - name: install project data
-  shell: "curl 'http://localhost/webtop/install/' -H 'Host: {{domains[0]}}' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:29.0) Gecko/20100101 Firefox/29.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate' -H 'Referer: http://{{domains[0]}}/webtop/install/' -H 'Connection: keep-alive' -H 'Content-Type: application/x-www-form-urlencoded' --data 'selectedSkeleton=&displayName={{farcry_installer_displayname}}&projectDirectoryName={{farcry_installer_project}}&name={{farcry_installer_project}}&updateappKey={{farcry_installer_updateappkey}}&dsn={{railo_datasource}}&dbType=mysql&dbOwner=&farcryUserPassword={{farcry_installer_password}}&installAction=install'"
+  shell: "curl 'http://localhost/webtop/install/' -H 'Host: {{domains[0]}}' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:29.0) Gecko/20100101 Firefox/29.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate' -H 'Referer: http://{{domains[0]}}/webtop/install/' -H 'Connection: keep-alive' -H 'Content-Type: application/x-www-form-urlencoded' --data 'selectedSkeleton=&displayName={{farcry_installer_displayname}}&projectDirectoryName={{farcry_installer_project}}&name={{farcry_installer_project}}&updateappKey={{farcry_installer_updateappkey}}&dsn={{cfml_datasource}}&dbOwner={{cfml_datasource_owner}}&farcryUserPassword={{farcry_installer_password}}&installAction=install'"
   when: farcry_installer_run and db_check|failed
 - name: project updateall
   shell: "curl 'http://localhost/?updateall={{farcry_installer_updateappkey}}' -H 'Host: {{domains[0]}}' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:29.0) Gecko/20100101 Firefox/29.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate' -H 'Referer: http://{{domains[0]}}/' -H 'Connection: keep-alive'"
