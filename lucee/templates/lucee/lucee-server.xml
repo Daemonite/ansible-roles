@@ -8,7 +8,7 @@ Path placeholders:
 	{system-directory}: path to thesystem directory
 	{web-context-hash}: hash of the web context
 
---><lucee-configuration pw="{{lucee_server_password_hash}}" version="4.2"><cfabort/>
+--><lucee-configuration {% if cfml_website_password_hash != '' %}hspw="{{lucee_server_password_hash}}" salt="{{lucee_server_salt}}"{% else %}pw="{{lucee_server_password_hash}}"{% endif %} version="4.2"><cfabort/>
 
 	<!--
 	system:

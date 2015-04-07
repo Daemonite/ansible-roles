@@ -18,8 +18,14 @@
   nginx_selfsigned: True
   nginx_certificate: ""
   nginx_certificate_key: ""
+  nginx_aliases: # use `nginx: false` or `cfml: false` to not use that alias for that config
+  - virtual: /material
+    actual: /opt/www/plugins/material/www
+  - virtual: /farcrycms
+    actual: /opt/www/plugins/farcrycms/www
 
   cfml_website_password_hash: "5b7a87d1479e4f72b1076c4e8d8c0edd749cca9ba62ae5a74859f507e72a37ca"
+  cfml_website_alt: ""
   cfml_datasource: "chelsea"
   cfml_datasource_host: "localhost"
   cfml_datasource_port: "3306"

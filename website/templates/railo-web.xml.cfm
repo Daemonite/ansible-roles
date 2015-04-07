@@ -117,6 +117,9 @@ Path placeholders:
         <mapping archive="{railo-web}/context/railo-context.ra" physical="{railo-web}/context/" primary="physical" readonly="yes" toplevel="yes" trusted="true" virtual="/railo-context/"/>
         <mapping inspect-template="" physical="/opt/www" primary="physical" toplevel="true" virtual="/farcry"/>
         <mapping inspect-template="" physical="/opt/www/core/webtop" primary="physical" toplevel="true" virtual="/webtop"/>
+        {% for alias in nginx_aliases %}{% if alias.cfml|default(true) %}
+        <mapping inspect-template="" physical="{{alias.actual}}" primary="physical" toplevel="true" virtual="{{alias.virtual}}"/>
+        {% endif %}{% endfor %}
     </mappings> 
     
     <custom-tag>
