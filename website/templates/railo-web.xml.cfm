@@ -30,6 +30,14 @@ Path placeholders:
 <!--     - http://sourceforge.net                                                                       -->
 <!--    or ask your database distributor                                                                -->
     <data-sources>
+        {% for datasource in cfml_datasources %}
+            {% if datasource.type == 'mysql' %}
+            <data-source allow="511" blob="true" class="org.gjt.mm.mysql.Driver" clob="true" connectionLimit="-1" connectionTimeout="1" custom="useUnicode=true&amp;characterEncoding=UTF-8&amp;allowMultiQueries=true&amp;useLegacyDatetimeCode=true" database="{{datasource.database}}" dbdriver="MySQL" dsn="jdbc:mysql://{host}:{port}/{database}" host="{{datasource.host}}" metaCacheTimeout="60000" name="{{datasource.name}}" password="{% if datasource.password_hash != "" %}encrypted:{{datasource.password_hash}}{% endif %}" port="{{datasource.port}}" storage="false" timezone="AET" username="{{datasource.username}}" validate="false"/>
+            {% elif datasource.type == 'mssql2005' %}
+            <data-source allow="511" blob="true" class="com.microsoft.jdbc.sqlserver.SQLServerDriver" clob="true" connectionTimeout="1" custom="DATABASENAME={{datasource.database}}&amp;sendStringParametersAsUnicode=true&amp;SelectMethod=direct" database="{{datasource.database}}" dbdriver="MSSQL" dsn="jdbc:sqlserver://{host}:{port}" host="{{datasource.host}}" metaCacheTimeout="60000" name="{{datasource.name}}" password="{% if datasource.password_hash != "" %}encrypted:{{datasource.password_hash}}{% endif %}" port="{{datasource.port}}" storage="false" username="{{datasource.username}}" validate="false"/>
+            {% endif %}
+        {% endfor %}
+
         {% if cfml_datasource_type == 'mysql' %}
         <data-source allow="511" blob="true" class="org.gjt.mm.mysql.Driver" clob="true" connectionLimit="-1" connectionTimeout="1" custom="useUnicode=true&amp;characterEncoding=UTF-8&amp;allowMultiQueries=true&amp;useLegacyDatetimeCode=true" database="{{cfml_datasource_database}}" dbdriver="MySQL" dsn="jdbc:mysql://{host}:{port}/{database}" host="{{cfml_datasource_host}}" metaCacheTimeout="60000" name="{{cfml_datasource}}" password="{% if cfml_datasource_password_hash != "" %}encrypted:{{cfml_datasource_password_hash}}{% endif %}" port="{{cfml_datasource_port}}" storage="false" timezone="AET" username="{{cfml_datasource_username}}" validate="false"/>
         {% elif cfml_datasource_type == 'mysql2005' %}
