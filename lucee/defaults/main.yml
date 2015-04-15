@@ -6,6 +6,7 @@
   lucee_xmx: 512m
   lucee_max_perm_size: 128m
   lucee_server_password_hash: 5b7a87d1479e4f72b1076c4e8d8c0edd749cca9ba62ae5a74859f507e72a37ca
+  lucee_server_salt: ""
 
   log_sync_directory: ""
 

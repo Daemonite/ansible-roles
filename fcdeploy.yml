@@ -1,6 +1,8 @@
 ---
 - hosts: webservers
   sudo: true
+  vars:
+    farcry_fcscript_overridechanges: False
   tasks:
   # setup git key
   - name: key path

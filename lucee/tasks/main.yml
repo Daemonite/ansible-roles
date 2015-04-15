@@ -29,4 +29,22 @@
   cron: name="tomcat log sync" job="for f in `ls /opt/lucee/tomcat/logs/`; do cp /opt/lucee/tomcat/logs/$f {{log_sync_directory}}/tomcat-$f; done"
   when: log_sync_directory != ""
 
+# FusionReactor setup
+- name: download FusionReactor installer
+  get_url: url={{fusionreactor_installer}} dest=/opt/{{fusionreactor_installer|basename}} mode=0744
+- stat: path=/opt/fusionreactor
+  register: fusionreactorinstalled
+- name: copy FusionReactor installation properties
+  template: src=fusionreactor/response.varfile dest=/tmp/response.varfile
+  when: fusionreactorinstalled.stat.exists == False
+- name: install FusionReactor
+  shell: /opt/{{fusionreactor_installer|basename}} -q -varfile /tmp/response.varfile creates=/opt/fusionreactor
+  register: installed_fusionreactor
+- name: delete FusionReactor installation properties
+  file: path=/tmp/response.varfile state=absent
+- name: setup FusionReactor Lucee agent directory
+  file: path=/opt/fusionreactor/instance/Lucee state=directory
+- name: copy FusionReactor Lucee agent JAR
+  command: cp /opt/fusionreactor/etc/lib/fusionreactor.jar /opt/fusionreactor/instance/Lucee/fusionreactor.jar creates="/opt/fusionreactor/instance/Lucee/fusionreactor.jar"
+
 - meta: flush_handlers

@@ -33,7 +33,7 @@ lucee_MAXPERMSIZE={{lucee_max_perm_size}}
 {% endif %}
 
 CATALINA_OPTS="-javaagent:lib/lucee-inst.jar \
-               {% if fusionreactor_deploy %}-javaagent:/opt/fusionreactor/instance/lucee/fusionreactor.jar=name=lucee,address=8088{% endif %} \
+               {% if fusionreactor_deploy %}-javaagent:/opt/fusionreactor/instance/Lucee/fusionreactor.jar=name=lucee,address=8088{% endif %} \
                -Dmail.smtp.localhost=$HOSTNAME
                -XX:+CMSIncrementalMode \
                -XX:+ExplicitGCInvokesConcurrent \
