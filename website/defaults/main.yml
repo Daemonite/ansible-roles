@@ -27,6 +27,7 @@
 
   cfml_website_password_hash: "5b7a87d1479e4f72b1076c4e8d8c0edd749cca9ba62ae5a74859f507e72a37ca"
   cfml_website_salt: ""
+  cfml_datasources: []
   cfml_datasource: "chelsea"
   cfml_datasource_host: "localhost"
   cfml_datasource_port: "3306"
