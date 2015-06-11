@@ -45,6 +45,8 @@ CATALINA_OPTS="-javaagent:lib/lucee-inst.jar \
                -XX:MaxPermSize=$lucee_MAXPERMSIZE"
 
 JAVA_OPTS="{% if fusionreactor_deploy and fusionreactor_license_key != "" %}-Dfrlicense={{fusionreactor_license_key}}{% endif %}"
+APPLICATION_ENVIRONMENT="{{application_environment}}"
 
 export CATALINA_OPTS;
 export JAVA_OPTS;
+export APPLICATION_ENVIRONMENT;
