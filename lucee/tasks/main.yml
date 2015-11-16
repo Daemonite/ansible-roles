@@ -29,6 +29,16 @@
   cron: name="tomcat log sync" job="for f in `ls /opt/lucee/tomcat/logs/`; do cp /opt/lucee/tomcat/logs/$f {{log_sync_directory}}/tomcat-$f; done"
   when: log_sync_directory != ""
 
+# redis extension
+- name: lib files
+  copy: src=redis/lib dest=/opt/lucee/lib/lucee-server/context/
+  when: lucee_redis_extension
+  notify: restart lucee
+- name: extension files
+  copy: src=redis/extensions dest=/opt/lucee/lib/lucee-server/context/
+  when: lucee_redis_extension
+  notify: restart lucee
+
 # FusionReactor setup
 - name: download FusionReactor installer
   get_url: url={{fusionreactor_installer}} dest=/opt/{{fusionreactor_installer|basename}} mode=0744

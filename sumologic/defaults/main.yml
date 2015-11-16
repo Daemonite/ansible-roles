@@ -1,0 +1,4 @@
+---
+  nginx: False
+  unswtv: False
+  job_logs: /var/log/jobs

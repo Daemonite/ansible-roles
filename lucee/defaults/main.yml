@@ -10,6 +10,8 @@
 
   log_sync_directory: ""
 
+  lucee_redis_extension: false
+
   domains: 
   - localhost
   web_root: /opt/www/projects/chelsea/www

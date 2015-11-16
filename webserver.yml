@@ -4,7 +4,10 @@
   roles:
   - { role: common }
   - { role: awscli, when: role_awscli is not defined or role_awscli }
-  - { role: memcached, when: role_memcached is not defined or role_memcached }
+  - { role: memcached, when: role_memcached is defined and role_memcached }
+  - { role: elasticmq, when: role_elasticmq is defined and role_elasticmq }
+  - { role: redis, when: role_redis is defined and role_redis }
+  - { role: sumologic, when: role_sumologic is defined and role_sumologic }
   - { role: mysql, when: role_mysql is not defined or role_mysql }
   - { role: railo, when: role_railo is not defined or role_railo }
   - { role: lucee, when: role_lucee is not defined or role_lucee }

@@ -43,7 +43,7 @@
   file: path=/etc/nginx/ssl state=directory
   when: nginx_selfsigned == True
 - name: create self-signed SSL cert
-  command: openssl req -new -nodes -x509 -subj "/C=AU/ST=NSW/L=Sydney/O=Daemon/CN={{ domains[0] }}" -days 3650 -keyout {{nginx_certificate_key}} -out {{nginx_certificate}} -extensions v3_ca creates={{nginx_certificate}}
+  command: openssl req -new -nodes -x509 -subj '/C=AU/ST=NSW/L=Sydney/O=Daemon/CN={{ domains[0] }}' -days 3650 -keyout {{nginx_certificate_key}} -out {{nginx_certificate}} -extensions v3_ca creates={{nginx_certificate}}
   when: nginx_selfsigned == True
   notify: restart nginx
 - meta: flush_handlers
@@ -65,6 +65,37 @@
 - name: sync railo logs
   cron: name="railo log sync" job="for f in `ls /opt/WEB-INF/logs/`; do cp /opt/WEB-INF/logs/$f {{log_sync_directory}}/railo-$f; done"
   when: log_sync_directory != ""
+
+# redis extension
+- name: lib files
+  copy: src=redis/ dest=/opt/railo/lib/railo-server/context/
+  when: railo_redis_extension
+  notify: restart Railo
+- name: lib files
+  copy: src=redis/ dest=/opt/lucee/lib/lucee-server/context/
+  when: lucee_redis_extension
+  notify: restart lucee
+
+# jar files
+- name: copy project jar files into WEB-INF
+  copy: src={{item}} dest=/opt/WEB-INF/lib/{{item|basename}}
+  with_find:
+  - /opt/www/plugins -iname '*.jar' -type f
+  - /opt/www/projects -iname '*.jar' -type f
+  when: cfml_copy_jars
+  notify: 
+  - restart Railo
+  - restart lucee
+
+# setup redis extension
+- name: put the Redis driver in place
+  copy: src=redis/RedisCache.cfc dest=/opt/WEB-INF/context/admin/cdriver/
+  when: railo_redis_extension and (role_railo is not defined or role_railo)
+  notify: restart Railo
+- name: put the Redis driver in place
+  copy: src=redis/RedisCache.cfc dest=/opt/WEB-INF/context/admin/cdriver/
+  when: lucee_redis_extension and (role_lucee is not defined or role_lucee)
+  notify: restart lucee
 
 # run farcry installer
 - name: check if database is set up (railo)

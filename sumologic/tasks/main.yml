@@ -1,0 +1,11 @@
+---
+- name: download SumoLogic collector
+  get_url: url=https://collectors.sumologic.com/rest/download/deb/64 dest=/opt/SumoCollector.deb mode=0744
+- name: copy SumoLogic conf
+  template: src=sumo.conf dest=/etc/sumo.conf
+  notify: restart SumoLogic collector
+- name: copy SumoLogic sources
+  template: src=sumosources.json dest=/opt/sumosources.json
+  notify: restart SumoLogic collector
+- name: install SumoLogic collector
+  apt: deb=/opt/SumoCollector.deb

@@ -29,6 +29,16 @@
   cron: name="tomcat log sync" job="for f in `ls /opt/railo/tomcat/logs/`; do cp /opt/railo/tomcat/logs/$f {{log_sync_directory}}/tomcat-$f; done"
   when: log_sync_directory != ""
 
+# redis extension
+- name: lib files
+  copy: src=redis/lib dest=/opt/railo/lib/railo-server/context/
+  when: railo_redis_extension
+  notify: restart Railo
+- name: extension files
+  copy: src=redis/extensions dest=/opt/railo/lib/railo-server/context/
+  when: railo_redis_extension
+  notify: restart Railo
+
 # FusionReactor setup
 - name: download FusionReactor installer
   get_url: url={{fusionreactor_installer}} dest=/opt/{{fusionreactor_installer|basename}} mode=0744

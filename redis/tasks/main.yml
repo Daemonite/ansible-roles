@@ -1,0 +1,6 @@
+---
+# system packages
+- name: install packages
+  apt: pkg={{item}} state=latest
+  with_items:
+  - redis-server

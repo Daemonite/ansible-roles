@@ -1,0 +1,3 @@
+---
+- name: restart ElasticMQ
+  service: name=elasticmq state=restarted

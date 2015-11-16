@@ -1,0 +1,15 @@
+---
+- name: install packages
+  apt: pkg={{item}} state=latest
+  with_items:
+  - openjdk-7-jre
+- name: download stand-alone ElasticMQ
+  get_url: url={{elasticmq_jar}} dest=/opt/{{elasticmq_jar|basename}} mode=0744
+- name: copy in ElasticMQ configuration
+  template: src=elasticmq_sqs.conf dest=/etc/elasticmq.conf
+  notify: restart ElasticMQ
+- name: setup ElasticMQ service
+  template: src=elasticmq.conf dest=/etc/init/elasticmq.conf
+  notify: restart ElasticMQ
+- name: service should be started
+  service: name=elasticmq enabled=yes state=started

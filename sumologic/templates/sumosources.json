@@ -1,0 +1,89 @@
+{
+	"api.version": "v1",
+	"collector": {
+		"category" : "{{category}}"
+	},
+	"sources": [{
+		"name" : "System",
+		"description" : "System log",
+		"category" : "syslog",
+		"timeZone" : "Australia/Sydney",
+		"sourceType" : "LocalFile",
+		"pathExpression" : "/var/log/syslog"
+	}
+	{% if role_nginx %}, {
+		"name" : "Nginx Access",
+		"description" : "Nginx access log",
+		"category" : "nginx/access",
+		"timeZone" : "Australia/Sydney",
+		"sourceType" : "LocalFile",
+		"pathExpression" : "/var/log/nginx/access.log"
+	}, {
+		"name" : "Nginx Errors",
+		"description" : "Nginx error log",
+		"category" : "nginx/error",
+		"timeZone" : "Australia/Sydney",
+		"sourceType" : "LocalFile",
+		"pathExpression" : "/var/log/nginx/error.log"
+	}
+	{% endif %}
+	{% if role_lucee %}
+	, {
+		"name" : "Lucee Exceptions",
+		"description" : "Lucee exception log",
+		"category" : "lucee/exception",
+		"timeZone" : "Australia/Sydney",
+		"sourceType" : "LocalFile",
+		"pathExpression" : "/opt/WEB-INF/logs/*",
+		"blacklist" : [
+			"/opt/WEB-INF/logs/deploy.log",
+			"/opt/WEB-INF/logs/scheduler.log",
+			"/opt/WEB-INF/logs/mail.log"
+		]
+	}, {
+		"name" : "Lucee Scheduler",
+		"description" : "Lucee schedule log",
+		"category" : "lucee/schedule",
+		"timeZone" : "Australia/Sydney",
+		"sourceType" : "LocalFile",
+		"pathExpression" : "/opt/WEB-INF/logs/scheduler.log"
+	}, {
+		"name" : "Lucee Mail",
+		"description" : "Lucee mail log",
+		"category" : "lucee/mail",
+		"timeZone" : "Australia/Sydney",
+		"sourceType" : "LocalFile",
+		"pathExpression" : "/opt/WEB-INF/logs/mail.log"
+	}
+	{% endif %}
+	{% if role_railo %}
+	, {
+		"name" : "Railo Exceptions",
+		"description" : "Railo exception log",
+		"category" : "railo/exception",
+		"timeZone" : "Australia/Sydney",
+		"sourceType" : "LocalFile",
+		"pathExpression" : "/opt/WEB-INF/logs/*",
+		"blacklist" : [
+			"/opt/WEB-INF/logs/deploy.log",
+			"/opt/WEB-INF/logs/scheduler.log",
+			"/opt/WEB-INF/logs/mail.log"
+		]
+	}, {
+		"name" : "Railo Scheduler",
+		"description" : "Railo schedule log",
+		"category" : "railo/schedule",
+		"timeZone" : "Australia/Sydney",
+		"sourceType" : "LocalFile",
+		"pathExpression" : "/opt/WEB-INF/logs/scheduler.log"
+	}, {
+		"name" : "Railo Mail",
+		"description" : "Railo mail log",
+		"category" : "railo/mail",
+		"timeZone" : "Australia/Sydney",
+		"sourceType" : "LocalFile",
+		"pathExpression" : "/opt/WEB-INF/logs/mail.log"
+	}
+	{% endif %}
+	]
+}
